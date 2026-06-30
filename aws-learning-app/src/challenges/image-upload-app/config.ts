@@ -22,7 +22,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('frontend-bucket', 'S3 Frontend Bucket', '静的フロント', ICON.s3, { x: 440, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
   makeNode('upload-bucket', 'S3 Upload Bucket', '原本画像', ICON.s3, { x: 640, y: 20, width: 165, height: 82 }, nodeStyle.data, { category: 'external' }),
   makeNode('thumbnail-bucket', 'S3 Thumbnail Bucket', '生成画像', ICON.s3, { x: 835, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 40, y: -28, width: 128, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 300, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', '投稿API入口', ICON.alb, { x: 70, y: 158, width: 165, height: 84 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs-api', 'ECS Fargate', '画像投稿API', ICON.ecs, { x: 58, y: 86, width: 180, height: 84 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('ecs-worker', 'ECS Fargate', 'サムネイルWorker', ICON.ecs, { x: 58, y: 210, width: 180, height: 84 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),

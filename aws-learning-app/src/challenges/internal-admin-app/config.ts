@@ -19,7 +19,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('admin-pc', '管理者', 'ローカルPC', 'Laptop', { x: 20, y: 320, width: 140, height: 86 }, nodeStyle.external, { category: 'external' }),
   makeNode('admin-role', 'IAM Admin Role', 'SSM許可', 'BadgeCheck', { x: 210, y: 40, width: 160, height: 78 }, nodeStyle.security, { category: 'external' }),
   makeNode('ssm-service', 'SSM Session Manager', 'ポートフォワード', 'PlugZap', { x: 420, y: 40, width: 190, height: 78 }, nodeStyle.edge, { category: 'external' }),
-  makeNode('ssm-endpoint', 'SSM VPC Endpoints', 'ssm/ec2messages', 'Cable', { x: 70, y: -28, width: 165, height: 64 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('ssm-endpoint', 'SSM VPC Endpoints', 'ssm/ec2messages', 'Cable', { x: 230, y: -32, width: 190, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('admin-ec2', 'Admin EC2', 'SSM Agent', 'ServerCog', { x: 90, y: 105, width: 165, height: 86 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('rds', 'Private RDS', 'PostgreSQL', ICON.rds, { x: 335, y: 105, width: 165, height: 86 }, nodeStyle.data, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('session-logs', 'Session Logs', '監査ログ', 'Activity', { x: 690, y: 40, width: 155, height: 78 }, nodeStyle.observability, { category: 'external' }),

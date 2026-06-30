@@ -23,13 +23,14 @@ export const DiagramNode = ({
   const glowStyle = isActive
     ? { boxShadow: `0 0 16px 2px ${activeTheme.pathHex}40` }
     : undefined;
+  const isGateway = node.category === 'gateway';
 
   return (
     <div
       className={`
         relative flex h-full w-full flex-col items-center justify-center
         ${node.style.bgColor} border-2 ${node.style.borderColor}
-        rounded-lg p-3 cursor-pointer transition-all duration-300
+        rounded-lg p-2.5 cursor-pointer transition-all duration-300
         hover:border-slate-200/70
         ${isDimmed ? 'opacity-40' : ''}
         ${node.style.width ?? ''}
@@ -57,24 +58,24 @@ export const DiagramNode = ({
 
       {/* Icon */}
       <div className={`mb-1.5 ${node.style.textColor}`}>
-        {resolveIcon(node.icon, { size: 28 })}
+        {resolveIcon(node.icon, { size: isGateway ? 22 : 24 })}
       </div>
 
       {/* Label */}
-      <span className={`text-xs font-bold ${node.style.textColor} text-center leading-tight`}>
+      <span className={`max-w-full break-words px-1 text-center text-[11px] font-bold leading-tight ${node.style.textColor}`}>
         {node.label}
       </span>
 
       {/* Sublabel */}
       {node.sublabel && (
-        <span className={`text-[10px] font-bold ${node.style.accentColor} text-center mt-0.5`}>
+        <span className={`mt-0.5 max-w-full break-words px-1 text-center text-[9px] font-bold leading-tight ${node.style.accentColor}`}>
           {node.sublabel}
         </span>
       )}
 
       {/* Metadata (IP address etc) */}
       {node.metadata && (
-        <span className="text-[9px] font-mono text-slate-500 text-center mt-0.5">
+        <span className="mt-0.5 max-w-full break-words px-1 text-center font-mono text-[8px] leading-tight text-slate-500">
           {node.metadata}
         </span>
       )}

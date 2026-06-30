@@ -119,7 +119,7 @@ const BuilderNode = ({ data }: NodeProps<BuilderServiceNode>) => {
   return (
     <div
       className={`
-        relative flex h-full w-full flex-col items-center justify-center rounded-lg border-2 p-3
+        relative flex h-full w-full flex-col items-center justify-center rounded-lg border-2 p-2.5
         ${data.node.style.bgColor} ${activeClasses}
         ${isGateway ? 'border-dashed' : ''}
         ${data.isLocked ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'}
@@ -129,18 +129,18 @@ const BuilderNode = ({ data }: NodeProps<BuilderServiceNode>) => {
       {cornerHandles}
 
       <div className={`mb-1.5 ${data.isActive ? activeTextClasses[data.resultTone] : data.node.style.textColor}`}>
-        {resolveIcon(data.node.icon, { size: isGateway ? 22 : 28 })}
+        {resolveIcon(data.node.icon, { size: isGateway ? 22 : 24 })}
       </div>
-      <span className={`text-center text-xs font-bold leading-tight ${data.node.style.textColor}`}>
+      <span className={`max-w-full break-words px-1 text-center text-[11px] font-bold leading-tight ${data.node.style.textColor}`}>
         {data.node.label}
       </span>
       {data.node.sublabel && (
-        <span className={`mt-0.5 text-center text-[10px] font-bold ${data.node.style.accentColor}`}>
+        <span className={`mt-0.5 max-w-full break-words px-1 text-center text-[9px] font-bold leading-tight ${data.node.style.accentColor}`}>
           {data.node.sublabel}
         </span>
       )}
       {data.node.metadata && (
-        <span className="mt-0.5 text-center font-mono text-[9px] text-slate-500">
+        <span className="mt-0.5 max-w-full break-words px-1 text-center font-mono text-[8px] leading-tight text-slate-500">
           {data.node.metadata}
         </span>
       )}

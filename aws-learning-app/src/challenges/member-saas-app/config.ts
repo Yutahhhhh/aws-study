@@ -22,7 +22,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('waf', 'AWS WAF', '攻撃/不正Bot対策', 'ShieldCheck', { x: 430, y: 20, width: 150, height: 82 }, nodeStyle.security, { category: 'external' }),
   makeNode('cognito', 'Cognito', 'ログイン/トークン', 'LockKeyhole', { x: 610, y: 20, width: 150, height: 82 }, nodeStyle.security, { category: 'external' }),
   makeNode('audit-log', 'CloudWatch Logs', '監査/アプリログ', 'Activity', { x: 790, y: 20, width: 160, height: 82 }, nodeStyle.observability, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 42, y: -28, width: 130, height: 64 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 290, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', 'API入口', ICON.alb, { x: 72, y: 150, width: 170, height: 88 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs', 'ECS Fargate', '会員向けAPI', ICON.ecs, { x: 55, y: 118, width: 180, height: 88 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('rds', 'RDS PostgreSQL', '会員/契約データ', ICON.rds, { x: 55, y: 255, width: 180, height: 88 }, nodeStyle.data, { category: 'placement', parentId: 'zone-private-subnet' }),

@@ -26,7 +26,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('guardrails', 'Guardrails', '出力制御', 'ShieldCheck', { x: 1040, y: 160, width: 160, height: 78 }, nodeStyle.security, { category: 'external' }),
   makeNode('ingest-queue', 'SQS Ingest Queue', '取り込み待ち', 'ListTodo', { x: 1040, y: 300, width: 170, height: 78 }, nodeStyle.queue, { category: 'external' }),
   makeNode('cloudwatch', 'CloudWatch Logs', '検索/取り込みログ', 'Activity', { x: 1040, y: 500, width: 175, height: 78 }, nodeStyle.observability, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 40, y: -28, width: 128, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 310, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', '検索API入口', ICON.alb, { x: 70, y: 160, width: 165, height: 84 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs-search', 'ECS Fargate', '検索API', ICON.ecs, { x: 55, y: 72, width: 180, height: 84 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('ecs-ingest', 'ECS Fargate', '取り込みWorker', ICON.ecs, { x: 55, y: 196, width: 180, height: 84 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),

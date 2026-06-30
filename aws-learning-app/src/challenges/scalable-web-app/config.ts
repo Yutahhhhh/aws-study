@@ -47,7 +47,7 @@ const challengeZones: DiagramZone[] = [
   {
     id: 'vpc',
     label: 'VPC (10.4.0.0/16)',
-    position: { x: 230, y: 150, width: 780, height: 560 },
+    position: { x: 230, y: 150, width: 780, height: 630 },
     contentPadding: { top: 46, right: 18, bottom: 18, left: 18 },
     style: { borderColor: 'border-slate-600', borderStyle: 'border-dashed', bgColor: 'bg-transparent', labelColor: 'text-slate-500' },
   },
@@ -55,7 +55,7 @@ const challengeZones: DiagramZone[] = [
     id: 'public-a',
     label: 'Public Subnet (AZ-a)',
     parentZoneId: 'vpc',
-    position: { x: 24, y: 56, width: 350, height: 175 },
+    position: { x: 24, y: 56, width: 350, height: 200 },
     contentPadding: { top: 50, right: 16, bottom: 16, left: 16 },
     style: { borderColor: 'border-emerald-600', borderStyle: 'border-dashed', bgColor: 'bg-emerald-500/[0.03]', labelColor: 'text-emerald-400' },
   },
@@ -63,7 +63,7 @@ const challengeZones: DiagramZone[] = [
     id: 'public-c',
     label: 'Public Subnet (AZ-c)',
     parentZoneId: 'vpc',
-    position: { x: 396, y: 56, width: 350, height: 175 },
+    position: { x: 396, y: 56, width: 350, height: 200 },
     contentPadding: { top: 50, right: 16, bottom: 16, left: 16 },
     style: { borderColor: 'border-emerald-600', borderStyle: 'border-dashed', bgColor: 'bg-emerald-500/[0.03]', labelColor: 'text-emerald-400' },
   },
@@ -71,7 +71,7 @@ const challengeZones: DiagramZone[] = [
     id: 'private-a',
     label: 'Private Subnet (AZ-a)',
     parentZoneId: 'vpc',
-    position: { x: 24, y: 245, width: 350, height: 290 },
+    position: { x: 24, y: 285, width: 350, height: 320 },
     contentPadding: { top: 50, right: 16, bottom: 16, left: 16 },
     style: { borderColor: 'border-blue-500', borderStyle: 'border-dashed', bgColor: 'bg-blue-500/[0.03]', labelColor: 'text-blue-400' },
   },
@@ -79,7 +79,7 @@ const challengeZones: DiagramZone[] = [
     id: 'private-c',
     label: 'Private Subnet (AZ-c)',
     parentZoneId: 'vpc',
-    position: { x: 396, y: 245, width: 350, height: 290 },
+    position: { x: 396, y: 285, width: 350, height: 320 },
     contentPadding: { top: 50, right: 16, bottom: 16, left: 16 },
     style: { borderColor: 'border-blue-500', borderStyle: 'border-dashed', bgColor: 'bg-blue-500/[0.03]', labelColor: 'text-blue-400' },
   },
@@ -92,15 +92,15 @@ const answerNodes: DiagramNode[] = [
   makeNode('s3', 'S3', '静的ファイル', ICON.s3, { x: 450, y: 20, width: 140, height: 96 }, ecsStyle, { category: 'external' }),
   makeNode('autoscaling', 'Application Auto Scaling', 'Desired Count 自動増減', ICON.asg, { x: 770, y: 20, width: 230, height: 96 }, { bgColor: 'bg-amber-950', borderColor: 'border-amber-500', textColor: 'text-amber-200', accentColor: 'text-amber-400' }, { category: 'external', glossaryTermId: 'app-auto-scaling' }),
   // 境界
-  makeNode('igw', 'Internet Gateway', 'VPCの外部接続点', ICON.igw, { x: 40, y: -28, width: 130, height: 64 }, { bgColor: 'bg-orange-950', borderColor: 'border-orange-500', textColor: 'text-orange-100', accentColor: 'text-orange-300' }, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPCの外部接続点', ICON.igw, { x: 300, y: -32, width: 180, height: 78 }, { bgColor: 'bg-orange-950', borderColor: 'border-orange-500', textColor: 'text-orange-100', accentColor: 'text-orange-300' }, { category: 'gateway', parentId: 'zone-vpc' }),
   // 配置: Public AZ-a の ALB
-  makeNode('alb', 'ALB (Multi-AZ)', '2AZの健全Taskへ分散', ICON.alb, { x: 70, y: 80, width: 200, height: 80 }, albStyle, { category: 'placement', parentId: 'zone-public-a', glossaryTermId: 'alb-cross-az' }),
+  makeNode('alb', 'ALB (Multi-AZ)', '2AZの健全Taskへ分散', ICON.alb, { x: 70, y: 96, width: 200, height: 84 }, albStyle, { category: 'placement', parentId: 'zone-public-a', glossaryTermId: 'alb-cross-az' }),
   // 配置: ECS Tasks 2AZ
-  makeNode('ecs-a', 'ECS Task (AZ-a)', 'Fargate', ICON.ecs, { x: 30, y: 70, width: 180, height: 78 }, ecsStyle, { category: 'placement', parentId: 'zone-private-a', glossaryTermId: 'multi-az-spread' }),
-  makeNode('ecs-c', 'ECS Task (AZ-c)', 'Fargate', ICON.ecs, { x: 30, y: 70, width: 180, height: 78 }, ecsStyle, { category: 'placement', parentId: 'zone-private-c', glossaryTermId: 'multi-az-spread' }),
+  makeNode('ecs-a', 'ECS Task (AZ-a)', 'Fargate', ICON.ecs, { x: 36, y: 104, width: 190, height: 88 }, ecsStyle, { category: 'placement', parentId: 'zone-private-a', glossaryTermId: 'multi-az-spread' }),
+  makeNode('ecs-c', 'ECS Task (AZ-c)', 'Fargate', ICON.ecs, { x: 36, y: 104, width: 190, height: 88 }, ecsStyle, { category: 'placement', parentId: 'zone-private-c', glossaryTermId: 'multi-az-spread' }),
   // 配置: RDS primary/standby
-  makeNode('rds-primary', 'RDS Primary (AZ-a)', '読み書き', ICON.rds, { x: 30, y: 175, width: 180, height: 78 }, rdsStyle, { category: 'placement', parentId: 'zone-private-a', glossaryTermId: 'rds-multi-az' }),
-  makeNode('rds-standby', 'RDS Standby (AZ-c)', '同期/failover用', ICON.rds, { x: 30, y: 175, width: 180, height: 78 }, { bgColor: 'bg-slate-800', borderColor: 'border-slate-500', textColor: 'text-slate-300', accentColor: 'text-slate-400' }, { category: 'placement', parentId: 'zone-private-c', glossaryTermId: 'rds-multi-az' }),
+  makeNode('rds-primary', 'RDS Primary (AZ-a)', '読み書き', ICON.rds, { x: 36, y: 224, width: 190, height: 88 }, rdsStyle, { category: 'placement', parentId: 'zone-private-a', glossaryTermId: 'rds-multi-az' }),
+  makeNode('rds-standby', 'RDS Standby (AZ-c)', '同期/failover用', ICON.rds, { x: 36, y: 224, width: 190, height: 88 }, { bgColor: 'bg-slate-800', borderColor: 'border-slate-500', textColor: 'text-slate-300', accentColor: 'text-slate-400' }, { category: 'placement', parentId: 'zone-private-c', glossaryTermId: 'rds-multi-az' }),
   // 関連付け: Route Table → Subnet
   makeNode('public-rt', 'Public Route Table', '0.0.0.0/0 → IGW', ICON.rt, { x: 150, y: 26, width: 175, height: 34 }, rtStyle, { category: 'association', parentId: 'zone-public-a' }),
   makeNode('private-rt', 'Private Route Table', 'local', ICON.rt, { x: 150, y: 26, width: 175, height: 34 }, rtStyle, { category: 'association', parentId: 'zone-private-a' }),
@@ -168,7 +168,7 @@ const createZoneService = (serviceId: string, description: string, icon: string)
 };
 
 const answerDiagram: DiagramConfig = {
-  viewport: { width: 1040, height: 760, padding: 48 },
+  viewport: { width: 1040, height: 840, padding: 48 },
   zones: challengeZones,
   nodes: answerNodes,
   connections: [

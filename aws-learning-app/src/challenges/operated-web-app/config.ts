@@ -12,7 +12,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('user-pc', '利用者', 'ブラウザ', 'Users', { x: 20, y: 330, width: 135, height: 82 }, nodeStyle.external, { category: 'external' }),
   makeNode('cloudfront', 'CloudFront', '公開入口', ICON.cloudfront, { x: 230, y: 20, width: 160, height: 82 }, nodeStyle.edge, { category: 'external' }),
   makeNode('s3', 'S3', '静的ファイル', ICON.s3, { x: 430, y: 20, width: 135, height: 82 }, nodeStyle.data, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 38, y: -26, width: 122, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 250, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', 'API入口', ICON.alb, { x: 62, y: 145, width: 155, height: 82 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs', 'ECS Fargate', 'アプリAPI', ICON.ecs, { x: 52, y: 105, width: 165, height: 82 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('rds', 'RDS', 'アプリDB', ICON.rds, { x: 52, y: 220, width: 165, height: 82 }, nodeStyle.data, { category: 'placement', parentId: 'zone-private-subnet' }),

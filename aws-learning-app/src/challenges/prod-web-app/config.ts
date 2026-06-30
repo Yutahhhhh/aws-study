@@ -116,7 +116,7 @@ const answerNodes: DiagramNode[] = [
     'Internet Gateway',
     'VPCの外部接続点',
     internetGatewayIcon,
-    { x: 40, y: -28, width: 130, height: 64 },
+    { x: 270, y: -32, width: 180, height: 78 },
     {
       bgColor: 'bg-orange-950',
       borderColor: 'border-orange-500',

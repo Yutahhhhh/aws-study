@@ -23,7 +23,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('cloudfront', 'CloudFront', '公開入口/キャッシュ', ICON.cloudfront, { x: 390, y: 20, width: 175, height: 86 }, nodeStyle.edge, { category: 'external' }),
   makeNode('asset-bucket', 'S3 Asset Bucket', '画像/OGP', ICON.s3, { x: 600, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
   makeNode('seo-bucket', 'S3 SEO Bucket', 'sitemap / robots', ICON.s3, { x: 805, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 40, y: -28, width: 128, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 290, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', '記事アプリ入口', ICON.alb, { x: 70, y: 152, width: 165, height: 84 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs-renderer', 'ECS Fargate', '記事Renderer', ICON.ecs, { x: 56, y: 92, width: 180, height: 84 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('ecs-ogp', 'ECS Fargate', 'OGP生成Worker', ICON.ecs, { x: 56, y: 216, width: 180, height: 84 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),

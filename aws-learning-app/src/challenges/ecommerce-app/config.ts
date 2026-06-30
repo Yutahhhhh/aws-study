@@ -22,7 +22,7 @@ const answerNodes: DiagramNode[] = [
   makeNode('frontend-bucket', 'S3 Frontend Bucket', '静的フロント', ICON.s3, { x: 430, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
   makeNode('payment', '外部決済サービス', 'カード決済', 'CreditCard', { x: 630, y: 20, width: 150, height: 82 }, nodeStyle.external, { category: 'external' }),
   makeNode('email', 'Email Service', '注文メール', 'Mail', { x: 810, y: 20, width: 150, height: 82 }, nodeStyle.external, { category: 'external' }),
-  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 40, y: -28, width: 128, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 290, y: -32, width: 180, height: 78 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
   makeNode('alb', 'ALB', '注文API入口', ICON.alb, { x: 68, y: 155, width: 165, height: 84 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
   makeNode('ecs-service', 'ECS Fargate', '商品/注文API', ICON.ecs, { x: 52, y: 82, width: 180, height: 84 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
   makeNode('order-worker', 'ECS Fargate', '注文Worker', ICON.ecs, { x: 52, y: 206, width: 180, height: 84 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),
