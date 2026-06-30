@@ -1,0 +1,171 @@
+import type { ChallengeConfig } from '../../types/challenge';
+import type { DiagramConfig, DiagramNode, DiagramZone } from '../../types/diagram';
+import {
+  ICON,
+  makeNode,
+  makeServiceFactory,
+  makeZone,
+  makeZoneServiceFactory,
+  nodeStyle,
+  pickNodes,
+} from '../shared';
+
+const zones: DiagramZone[] = [
+  makeZone('vpc', 'VPC (Image App)', { x: 230, y: 150, width: 780, height: 540 }),
+  makeZone('public-subnet', 'Public Subnet', { x: 24, y: 58, width: 340, height: 450 }, 'public', 'vpc'),
+  makeZone('private-subnet', 'Private Subnet', { x: 398, y: 58, width: 340, height: 450 }, 'private', 'vpc'),
+];
+
+const answerNodes: DiagramNode[] = [
+  makeNode('user-pc', '利用者', '画像を投稿', 'Users', { x: 20, y: 345, width: 145, height: 86 }, nodeStyle.external, { category: 'external' }),
+  makeNode('cloudfront', 'CloudFront', 'Web/API入口', ICON.cloudfront, { x: 240, y: 20, width: 170, height: 86 }, nodeStyle.edge, { category: 'external' }),
+  makeNode('frontend-bucket', 'S3 Frontend Bucket', '静的フロント', ICON.s3, { x: 440, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
+  makeNode('upload-bucket', 'S3 Upload Bucket', '原本画像', ICON.s3, { x: 640, y: 20, width: 165, height: 82 }, nodeStyle.data, { category: 'external' }),
+  makeNode('thumbnail-bucket', 'S3 Thumbnail Bucket', '生成画像', ICON.s3, { x: 835, y: 20, width: 170, height: 82 }, nodeStyle.data, { category: 'external' }),
+  makeNode('igw', 'Internet Gateway', 'VPC境界', ICON.igw, { x: 40, y: -28, width: 128, height: 62 }, nodeStyle.gateway, { category: 'gateway', parentId: 'zone-vpc' }),
+  makeNode('alb', 'ALB', '投稿API入口', ICON.alb, { x: 70, y: 158, width: 165, height: 84 }, nodeStyle.edge, { category: 'placement', parentId: 'zone-public-subnet' }),
+  makeNode('ecs-api', 'ECS Fargate', '画像投稿API', ICON.ecs, { x: 58, y: 86, width: 180, height: 84 }, nodeStyle.app, { category: 'placement', parentId: 'zone-private-subnet' }),
+  makeNode('ecs-worker', 'ECS Fargate', 'サムネイルWorker', ICON.ecs, { x: 58, y: 210, width: 180, height: 84 }, nodeStyle.worker, { category: 'placement', parentId: 'zone-private-subnet' }),
+  makeNode('metadata-db', 'RDS PostgreSQL', '画像メタデータ', ICON.rds, { x: 58, y: 335, width: 180, height: 84 }, nodeStyle.data, { category: 'placement', parentId: 'zone-private-subnet' }),
+  makeNode('resize-queue', 'SQS Queue', '変換待ち', 'ListTodo', { x: 1050, y: 245, width: 155, height: 78 }, nodeStyle.queue, { category: 'external' }),
+  makeNode('dlq', 'SQS DLQ', '失敗イベント', 'ArchiveX', { x: 1050, y: 370, width: 155, height: 78 }, nodeStyle.security, { category: 'external' }),
+  makeNode('cloudwatch', 'CloudWatch Logs', 'API/Workerログ', 'Activity', { x: 1050, y: 500, width: 170, height: 78 }, nodeStyle.observability, { category: 'external' }),
+  makeNode('public-rt', 'Public Route Table', '0.0.0.0/0 -> IGW', ICON.routeTable, { x: 145, y: 26, width: 175, height: 34 }, nodeStyle.routeTable, { category: 'association', parentId: 'zone-public-subnet' }),
+  makeNode('private-rt', 'Private Route Table', 'local / endpoints', ICON.routeTable, { x: 145, y: 26, width: 175, height: 34 }, nodeStyle.routeTable, { category: 'association', parentId: 'zone-private-subnet' }),
+  makeNode('sg-alb', 'SG: ALB', 'inbound 443', 'Shield', { x: 28, y: -22, width: 118, height: 30 }, nodeStyle.security, { category: 'association', parentId: 'alb' }),
+  makeNode('sg-api', 'SG: ECS Service', 'from ALB SG', 'Shield', { x: 32, y: -22, width: 136, height: 30 }, nodeStyle.security, { category: 'association', parentId: 'ecs-api' }),
+  makeNode('sg-worker', 'SG: Worker', 'egress AWS svc', 'Shield', { x: 32, y: -22, width: 126, height: 30 }, nodeStyle.security, { category: 'association', parentId: 'ecs-worker' }),
+  makeNode('sg-rds', 'SG: RDS', 'from ECS SG', 'Shield', { x: 32, y: -22, width: 126, height: 30 }, nodeStyle.security, { category: 'association', parentId: 'metadata-db' }),
+];
+
+const createService = makeServiceFactory(answerNodes);
+const createZoneService = makeZoneServiceFactory(zones);
+
+const answerDiagram: DiagramConfig = {
+  viewport: { width: 1260, height: 740, padding: 48 },
+  zones,
+  nodes: answerNodes,
+  connections: [
+    { id: 'user-to-cf', from: 'user-pc', to: 'cloudfront', kind: 'traffic', fromAnchor: 'top', toAnchor: 'left' },
+    { id: 'cf-to-frontend', from: 'cloudfront', to: 'frontend-bucket', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'cf-to-igw', from: 'cloudfront', to: 'igw', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'igw-to-alb', from: 'igw', to: 'alb', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'alb-to-api', from: 'alb', to: 'ecs-api', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'api-to-upload', from: 'ecs-api', to: 'upload-bucket', kind: 'traffic', fromAnchor: 'top', toAnchor: 'bottom' },
+    { id: 'api-to-db', from: 'ecs-api', to: 'metadata-db', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'upload-to-queue', from: 'upload-bucket', to: 'resize-queue', kind: 'traffic', fromAnchor: 'right', toAnchor: 'top' },
+    { id: 'queue-to-worker', from: 'resize-queue', to: 'ecs-worker', kind: 'traffic', fromAnchor: 'left', toAnchor: 'right' },
+    { id: 'worker-to-thumbnail', from: 'ecs-worker', to: 'thumbnail-bucket', kind: 'traffic', fromAnchor: 'top', toAnchor: 'bottom' },
+    { id: 'worker-to-db', from: 'ecs-worker', to: 'metadata-db', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'right' },
+    { id: 'queue-to-dlq', from: 'resize-queue', to: 'dlq', kind: 'association', label: '失敗時', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'api-to-logs', from: 'ecs-api', to: 'cloudwatch', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'worker-to-logs', from: 'ecs-worker', to: 'cloudwatch', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'igw-to-public-rt', from: 'igw', to: 'public-rt', kind: 'attachment', label: 'route', fromAnchor: 'right', toAnchor: 'top' },
+    { id: 'sg-alb-to-sg-api', from: 'sg-alb', to: 'sg-api', kind: 'association', label: '許可元', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'sg-api-to-sg-rds', from: 'sg-api', to: 'sg-rds', kind: 'association', label: '許可元', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'sg-worker-to-sg-rds', from: 'sg-worker', to: 'sg-rds', kind: 'association', label: '許可元', fromAnchor: 'bottom', toAnchor: 'right' },
+  ],
+};
+
+const challenge: ChallengeConfig = {
+  slug: 'image-upload-app',
+  title: '画像投稿アプリを設計する',
+  description: '静的配信、投稿API、原本保存、非同期サムネイル生成、メタデータDB、失敗退避まで含む構成を組み立てる',
+  headerLabel: 'AWS DESIGN CHALLENGE',
+  badge: '設計演習',
+  icon: 'Images',
+  color: 'rose',
+  scenario:
+    'ユーザーが画像を投稿できるアプリを作ります。CloudFrontでフロントエンドを配信し、投稿APIはPrivate SubnetのECS Fargateで動かします。原本画像、変換キュー、サムネイル生成Worker、メタデータDB、Security Groupまで含めた完成構成にしてください。',
+  requirements: [
+    { id: 'network', title: 'AWSネットワークの土台', description: 'VPC、Public Subnet、Private Subnet、Route Table、Internet Gatewayを明示する。' },
+    { id: 'api', title: '投稿API', description: 'ALBだけをPublic Subnetに置き、ECS Fargateの投稿APIはPrivate Subnetに配置する。' },
+    { id: 'upload', title: '画像保存', description: '投稿APIから原本画像をS3 Upload Bucketへ保存する。' },
+    { id: 'async', title: '非同期サムネイル生成', description: 'S3イベントをSQSに積み、Private SubnetのECS Workerが処理する。' },
+    { id: 'metadata', title: 'メタデータDB', description: '投稿APIとWorkerからRDS PostgreSQLへ画像状態を保存する。' },
+    { id: 'security', title: 'Security Group', description: 'ALB、ECS、RDSにSGを関連付け、RDSはECSからだけ許可する。' },
+  ],
+  initialDiagram: {
+    viewport: { ...answerDiagram.viewport },
+    zones,
+    nodes: pickNodes(answerNodes, ['user-pc', 'cloudfront', 'frontend-bucket', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb']),
+    connections: [
+      { id: 'user-to-cf', from: 'user-pc', to: 'cloudfront', kind: 'traffic', fromAnchor: 'top', toAnchor: 'left' },
+      { id: 'cf-to-frontend', from: 'cloudfront', to: 'frontend-bucket', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
+      { id: 'cf-to-igw', from: 'cloudfront', to: 'igw', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
+      { id: 'igw-to-alb', from: 'igw', to: 'alb', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
+      { id: 'igw-to-public-rt', from: 'igw', to: 'public-rt', kind: 'attachment', label: 'route', fromAnchor: 'right', toAnchor: 'top' },
+    ],
+  },
+  lockedNodeIds: ['user-pc', 'cloudfront', 'frontend-bucket', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb'],
+  services: [
+    createZoneService('vpc', '画像投稿アプリを動かすネットワーク境界'),
+    createZoneService('public-subnet', '公開入口を置くSubnet'),
+    createZoneService('private-subnet', 'ECSとDBを置くSubnet'),
+    createService('cloudfront', 'Web/APIの公開入口'),
+    createService('frontend-bucket', '静的フロントエンドの配置先'),
+    createService('upload-bucket', '原本画像の保存先'),
+    createService('thumbnail-bucket', '生成サムネイルの保存先'),
+    createService('igw', 'VPCの外部接続点'),
+    createService('alb', '投稿APIへの公開受信口'),
+    createService('ecs-api', 'Private Subnetで動く画像投稿API'),
+    createService('ecs-worker', 'Private Subnetで動くサムネイル生成Worker'),
+    createService('metadata-db', '画像メタデータのRDS'),
+    createService('resize-queue', 'サムネイル生成を非同期化するQueue'),
+    createService('dlq', '失敗イベントの退避先'),
+    createService('cloudwatch', 'API/Workerログの出力先'),
+    createService('public-rt', 'Public SubnetのRoute Table'),
+    createService('private-rt', 'Private SubnetのRoute Table'),
+    createService('sg-alb', 'ALBに関連付けるSG'),
+    createService('sg-api', '投稿APIに関連付けるSG'),
+    createService('sg-worker', 'Workerに関連付けるSG'),
+    createService('sg-rds', 'RDSに関連付けるSG'),
+  ],
+  awsRules: {
+    vpcZoneId: 'vpc',
+    publicSubnetZoneIds: ['public-subnet'],
+    privateSubnetZoneIds: ['private-subnet'],
+    internetGatewayNodeId: 'igw',
+    routeTables: [
+      { routeTableNodeId: 'public-rt', subnetZoneId: 'public-subnet', label: 'Public Route Table', requiresInternetGatewayConnection: { internetGatewayNodeId: 'igw' } },
+      { routeTableNodeId: 'private-rt', subnetZoneId: 'private-subnet', label: 'Private Route Table' },
+    ],
+    securityGroups: [
+      { securityGroupNodeId: 'sg-alb', attachedToNodeId: 'alb', label: 'ALB Security Group' },
+      { securityGroupNodeId: 'sg-api', attachedToNodeId: 'ecs-api', label: 'ECS Fargate Security Group', allowedSourceSecurityGroupIds: ['sg-alb'] },
+      { securityGroupNodeId: 'sg-worker', attachedToNodeId: 'ecs-worker', label: 'ECS Worker Security Group' },
+      { securityGroupNodeId: 'sg-rds', attachedToNodeId: 'metadata-db', label: 'RDS Security Group', allowedSourceSecurityGroupIds: ['sg-api', 'sg-worker'] },
+    ],
+  },
+  checks: [
+    { id: 'static-path', type: 'path-exists', path: ['user-pc', 'cloudfront', 'frontend-bucket'], label: 'フロントエンドを配信できる', failureMessage: '利用者がCloudFront経由で静的フロントエンドを取得する経路がありません。' },
+    { id: 'api-path', type: 'path-exists', path: ['user-pc', 'cloudfront', 'igw', 'alb', 'ecs-api'], label: '投稿APIへ到達できる', failureMessage: '利用者の投稿リクエストがPrivate SubnetのECS Fargateまで届く流れが途切れています。' },
+    { id: 'upload-path', type: 'connection-exists', from: 'ecs-api', to: 'upload-bucket', label: '原本画像を保存できる', failureMessage: 'ECS Fargateの投稿APIからS3 Upload Bucketへの保存経路がありません。' },
+    { id: 'resize-path', type: 'path-exists', path: ['upload-bucket', 'resize-queue', 'ecs-worker', 'thumbnail-bucket'], label: 'サムネイルを非同期生成できる', failureMessage: '原本保存後にSQSを経由してECS Workerがサムネイルを保存する流れが途切れています。' },
+    { id: 'api-db-path', type: 'connection-exists', from: 'ecs-api', to: 'metadata-db', label: '投稿APIがDBを使える', failureMessage: '投稿APIからRDSへ画像メタデータを書き込む経路がありません。' },
+    { id: 'worker-db-path', type: 'connection-exists', from: 'ecs-worker', to: 'metadata-db', label: 'WorkerがDBを更新できる', failureMessage: 'WorkerからRDSへ変換結果を書き込む経路がありません。' },
+    { id: 'dlq-path', type: 'connection-exists', from: 'resize-queue', to: 'dlq', label: '失敗イベントを退避できる', failureMessage: '変換失敗イベントをDLQへ退避する関係がありません。' },
+    { id: 'api-logs', type: 'connection-exists', from: 'ecs-api', to: 'cloudwatch', label: '投稿APIがログを出せる', failureMessage: '投稿APIからCloudWatch Logsへのログ出力経路がありません。' },
+    { id: 'worker-logs', type: 'connection-exists', from: 'ecs-worker', to: 'cloudwatch', label: 'Workerがログを出せる', failureMessage: 'WorkerからCloudWatch Logsへのログ出力経路がありません。' },
+    { id: 'alb-public', type: 'node-in-zone', nodeId: 'alb', zoneId: 'public-subnet', label: 'ALBはPublic Subnetにある', failureMessage: 'ALBがPublic Subnetに配置されていません。' },
+    { id: 'api-private', type: 'node-in-zone', nodeId: 'ecs-api', zoneId: 'private-subnet', label: '投稿APIはPrivate Subnetにある', failureMessage: 'ECS Fargateの投稿APIがPrivate Subnetに配置されていません。' },
+    { id: 'worker-private', type: 'node-in-zone', nodeId: 'ecs-worker', zoneId: 'private-subnet', label: 'WorkerはPrivate Subnetにある', failureMessage: 'ECS FargateのWorkerがPrivate Subnetに配置されていません。' },
+    { id: 'db-private', type: 'node-in-zone', nodeId: 'metadata-db', zoneId: 'private-subnet', label: 'RDSはPrivate Subnetにある', failureMessage: 'RDSがPrivate Subnetに配置されていません。' },
+    { id: 'rds-only-ecs', type: 'incoming-only-from', nodeId: 'metadata-db', allowedSourceIds: ['ecs-api', 'ecs-worker'], label: 'RDSはECSからだけ使う', failureMessage: 'RDSへECS以外から入る経路があります。' },
+  ],
+  actions: [
+    { id: 'open-web', title: '利用者が投稿画面を開く', description: 'CloudFrontから静的フロントエンドを取得する。', checkIds: ['static-path'], successMessage: '投稿画面をCloudFront経由で配信できます。', failureMessage: '投稿画面の表示に失敗しました。' },
+    { id: 'post-image', title: '利用者が画像を投稿する', description: '投稿APIが原本画像をS3に保存し、メタデータをRDSへ書く。', checkIds: ['api-path', 'upload-path', 'api-db-path', 'alb-public', 'api-private', 'db-private'], successMessage: '投稿APIはPrivate Subnetで動き、原本画像とメタデータを保存できます。', failureMessage: '画像投稿に失敗しました。' },
+    { id: 'create-thumbnail', title: 'サムネイルを非同期生成する', description: 'SQSを経由してECS Workerがサムネイルを生成する。', checkIds: ['resize-path', 'worker-db-path', 'worker-private', 'dlq-path'], successMessage: 'サムネイル生成はキューとECS Workerで非同期に実行できます。', failureMessage: 'サムネイル生成経路の確認に失敗しました。' },
+    { id: 'operate-worker', title: '処理ログを確認する', description: '投稿APIとWorkerのログをCloudWatch Logsへ出す。', checkIds: ['api-logs', 'worker-logs', 'rds-only-ecs'], successMessage: '投稿APIとWorkerのログ、RDSの保護範囲を確認できます。', failureMessage: '運用確認に必要な構成が不足しています。' },
+  ],
+  answerDiagram,
+  answerTrace: [
+    { id: 'network', title: 'VPCの土台を作る', description: 'VPCにPublic/Private Subnetを作り、ALBをPublic、ECS/RDSをPrivateに置ける土台を用意します。', visibleNodeIds: ['user-pc', 'igw', 'public-rt', 'private-rt'], visibleConnectionIds: ['igw-to-public-rt'], activeNodeIds: ['igw', 'public-rt', 'private-rt'], activeConnectionIds: ['igw-to-public-rt'] },
+    { id: 'entry', title: '静的配信と投稿API入口を作る', description: '利用者はCloudFrontでフロントエンドを取得し、投稿APIはCloudFrontからIGW、ALB、ECS Fargateへ届きます。', visibleNodeIds: ['user-pc', 'cloudfront', 'frontend-bucket', 'igw', 'public-rt', 'private-rt', 'alb', 'sg-alb', 'ecs-api', 'sg-api'], visibleConnectionIds: ['user-to-cf', 'cf-to-frontend', 'cf-to-igw', 'igw-to-alb', 'alb-to-api', 'igw-to-public-rt', 'sg-alb-to-sg-api'], activeNodeIds: ['user-pc', 'cloudfront', 'alb', 'ecs-api', 'sg-alb', 'sg-api'], activeConnectionIds: ['user-to-cf', 'cf-to-igw', 'igw-to-alb', 'alb-to-api', 'sg-alb-to-sg-api'] },
+    { id: 'upload', title: '画像保存とメタデータDBをつなぐ', description: 'ECS Fargateの投稿APIは原本画像をS3へ保存し、画像メタデータをPrivate SubnetのRDSへ書きます。', visibleNodeIds: ['user-pc', 'cloudfront', 'frontend-bucket', 'upload-bucket', 'thumbnail-bucket', 'igw', 'public-rt', 'private-rt', 'alb', 'sg-alb', 'ecs-api', 'sg-api', 'metadata-db', 'sg-rds'], visibleConnectionIds: ['user-to-cf', 'cf-to-frontend', 'cf-to-igw', 'igw-to-alb', 'alb-to-api', 'api-to-upload', 'api-to-db', 'igw-to-public-rt', 'sg-alb-to-sg-api', 'sg-api-to-sg-rds'], activeNodeIds: ['ecs-api', 'upload-bucket', 'metadata-db', 'sg-rds'], activeConnectionIds: ['api-to-upload', 'api-to-db', 'sg-api-to-sg-rds'] },
+    { id: 'async', title: 'サムネイル生成を非同期化する', description: '原本保存イベントをSQSへ積み、Private SubnetのECS Workerがサムネイルを作成してS3へ保存します。失敗はDLQへ逃がします。', visibleNodeIds: ['user-pc', 'cloudfront', 'frontend-bucket', 'upload-bucket', 'thumbnail-bucket', 'igw', 'public-rt', 'private-rt', 'alb', 'sg-alb', 'ecs-api', 'sg-api', 'ecs-worker', 'sg-worker', 'metadata-db', 'sg-rds', 'resize-queue', 'dlq', 'cloudwatch'], visibleConnectionIds: ['user-to-cf', 'cf-to-frontend', 'cf-to-igw', 'igw-to-alb', 'alb-to-api', 'api-to-upload', 'api-to-db', 'upload-to-queue', 'queue-to-worker', 'worker-to-thumbnail', 'worker-to-db', 'queue-to-dlq', 'api-to-logs', 'worker-to-logs', 'igw-to-public-rt', 'sg-alb-to-sg-api', 'sg-api-to-sg-rds', 'sg-worker-to-sg-rds'], activeNodeIds: ['upload-bucket', 'resize-queue', 'ecs-worker', 'thumbnail-bucket', 'dlq', 'cloudwatch'], activeConnectionIds: ['upload-to-queue', 'queue-to-worker', 'worker-to-thumbnail', 'worker-to-db', 'queue-to-dlq', 'worker-to-logs'] },
+  ],
+};
+
+export default challenge;

@@ -12,6 +12,7 @@ import elbIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_N
 import s3IconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Storage/48/Arch_Amazon-Simple-Storage-Service_48.svg?url';
 import igwIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_Internet-Gateway_48.svg?url';
 import natGatewayIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_NAT-Gateway_48.svg?url';
+import routeTableIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Route-Table_48.svg?url';
 
 interface IconProps {
   size?: number;
@@ -28,6 +29,7 @@ const assetIconUrls: Record<string, string> = {
   '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Storage/48/Arch_Amazon-Simple-Storage-Service_48.svg': s3IconUrl,
   '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_Internet-Gateway_48.svg': igwIconUrl,
   '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_NAT-Gateway_48.svg': natGatewayIconUrl,
+  '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Route-Table_48.svg': routeTableIconUrl,
 };
 
 export function resolveIcon(iconName: string, props: IconProps = {}): React.ReactNode {

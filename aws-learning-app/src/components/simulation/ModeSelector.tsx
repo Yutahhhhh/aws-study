@@ -11,7 +11,7 @@ interface ModeSelectorProps {
 
 export const ModeSelector = ({ modes, currentModeId, modeThemes, onModeChange }: ModeSelectorProps) => {
   return (
-    <div className="flex flex-wrap gap-2 mb-4 z-10">
+    <div className="flex flex-wrap gap-1.5">
       {modes.map((mode) => {
         const theme = modeThemes[mode.themeId];
         if (!theme) return null;

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, MousePointerClick, FileText } from 'lucide-react';
+import { ArrowRight, MousePointerClick, FileText, PenTool } from 'lucide-react';
 import { Header } from '../components/common/Header';
 import { topicManifest } from '../topics';
+import { challengeManifest } from '../challenges';
 import type { TopicManifest } from '../types/topic';
 import { resolveIcon } from '../utils/iconResolver';
 
@@ -73,6 +74,20 @@ export const Home = () => {
           <div className="grid gap-6">
             {simulations.map((topic) => (
               <TopicCard key={topic.slug} topic={topic} />
+            ))}
+          </div>
+        </div>
+
+        {/* 設計演習 */}
+        <div className="space-y-6 mt-14">
+          <div className="flex items-center gap-3 mb-2">
+            <PenTool className="text-blue-400" size={24} />
+            <h2 className="text-2xl font-bold">設計演習</h2>
+          </div>
+          <p className="text-sm text-slate-500 -mt-3">要件から構成を作り、想定アクションの成功/失敗で理解する</p>
+          <div className="grid gap-6">
+            {challengeManifest.map((challenge) => (
+              <TopicCard key={challenge.slug} topic={challenge} />
             ))}
           </div>
         </div>

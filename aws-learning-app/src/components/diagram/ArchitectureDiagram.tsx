@@ -19,6 +19,15 @@ import type {
 import type { ModeTheme } from '../../theme/modeThemes';
 import { DiagramNode } from './DiagramNode';
 import { DiagramZone } from './DiagramZone';
+import { AssociationChip } from './AssociationChip';
+import {
+  buildFlowEdge,
+  nodeFlowExtent,
+  orderByParentDepth,
+  toZoneFlowId,
+  zoneFlowExtent,
+  zoneFlowParentId,
+} from './flowMapping';
 
 interface ArchitectureDiagramProps {
   config: DiagramConfig;
@@ -40,8 +49,9 @@ type ZoneNodeData = Record<string, unknown> & {
 };
 
 type ServiceFlowNode = Node<ServiceNodeData, 'service'>;
+type ChipFlowNode = Node<ServiceNodeData, 'chip'>;
 type ZoneFlowNode = Node<ZoneNodeData, 'zone'>;
-type DiagramFlowNode = ServiceFlowNode | ZoneFlowNode;
+type DiagramFlowNode = ServiceFlowNode | ChipFlowNode | ZoneFlowNode;
 type DiagramFlowEdge = Edge;
 
 const nodeTypes = {
@@ -54,11 +64,11 @@ const nodeTypes = {
       activeTheme={data.activeTheme}
     />
   ),
+  chip: ({ data }: NodeProps<ChipFlowNode>) => (
+    <AssociationChip node={data.node} isActive={data.isActive} />
+  ),
   zone: ({ data }: NodeProps<ZoneFlowNode>) => <DiagramZone zone={data.zone} />,
 } satisfies NodeTypes;
-
-const toHandleId = (anchor: string | undefined, type: 'source' | 'target') =>
-  `${anchor ?? (type === 'source' ? 'right' : 'left')}-${type}`;
 
 export const ArchitectureDiagram = ({
   config,
@@ -68,71 +78,59 @@ export const ArchitectureDiagram = ({
 }: ArchitectureDiagramProps) => {
   const flowNodes = useMemo<DiagramFlowNode[]>(() => {
     const zoneNodes: ZoneFlowNode[] = config.zones.map((zone) => ({
-      id: `zone-${zone.id}`,
+      id: toZoneFlowId(zone.id),
       type: 'zone',
       position: { x: zone.position.x, y: zone.position.y },
+      parentId: zoneFlowParentId(zone),
+      extent: zoneFlowExtent(zone),
       data: { zone },
       width: zone.position.width,
       height: zone.position.height,
       draggable: false,
       selectable: false,
       connectable: false,
-      zIndex: 0,
+      zIndex: zone.parentZoneId ? 1 : 0,
       ariaLabel: zone.label,
     }));
 
-    const serviceNodes: ServiceFlowNode[] = config.nodes.map((node) => ({
-      id: node.id,
-      type: 'service',
-      position: { x: node.position.x, y: node.position.y },
-      data: {
-        node,
-        isActive: stepState.activeNodeIds.includes(node.id),
-        isDimmed: stepState.dimmedNodeIds?.includes(node.id) ?? false,
-        hasPacket: stepState.packetAtNodeId === node.id,
-        activeTheme,
-      },
-      width: node.position.width,
-      height: node.position.height,
-      draggable: false,
-      selectable: false,
-      connectable: false,
-      zIndex: 20,
-      ariaLabel: node.label,
-    }));
+    const serviceNodes: (ServiceFlowNode | ChipFlowNode)[] = config.nodes.map((node) => {
+      const isChip = node.category === 'association';
+      return {
+        id: node.id,
+        type: isChip ? 'chip' : 'service',
+        position: { x: node.position.x, y: node.position.y },
+        parentId: node.parentId,
+        extent: nodeFlowExtent(node),
+        data: {
+          node,
+          isActive: stepState.activeNodeIds.includes(node.id),
+          isDimmed: stepState.dimmedNodeIds?.includes(node.id) ?? false,
+          hasPacket: stepState.packetAtNodeId === node.id,
+          activeTheme,
+        },
+        width: node.position.width,
+        height: node.position.height,
+        draggable: false,
+        selectable: false,
+        connectable: false,
+        zIndex: isChip ? 30 : 20,
+        ariaLabel: node.label,
+      } as ServiceFlowNode | ChipFlowNode;
+    });
 
-    return [...zoneNodes, ...serviceNodes];
+    return orderByParentDepth<DiagramFlowNode>([...zoneNodes, ...serviceNodes]);
   }, [activeTheme, config.nodes, config.zones, stepState]);
 
   const flowEdges = useMemo<DiagramFlowEdge[]>(
     () =>
-      config.connections.map((connection) => {
-        const isActive = stepState.activeConnectionIds.includes(connection.id);
-        const color = isActive ? activeTheme.pathHex : connection.style?.color ?? '#475569';
-
-        return {
-          id: connection.id,
-          source: connection.from,
-          target: connection.to,
-          sourceHandle: toHandleId(connection.fromAnchor, 'source'),
-          targetHandle: toHandleId(connection.toAnchor, 'target'),
-          type: 'smoothstep',
-          animated: isActive,
+      config.connections.map((connection) =>
+        buildFlowEdge(connection, {
+          isActive: stepState.activeConnectionIds.includes(connection.id),
+          activeColor: activeTheme.pathHex,
+          idleColor: '#475569',
           selectable: false,
-          zIndex: 10,
-          label: connection.label,
-          style: {
-            stroke: color,
-            strokeWidth: isActive ? 3 : connection.style?.thickness ?? 2,
-            strokeOpacity: isActive ? 0.95 : 0.4,
-            strokeDasharray: connection.style?.dashed && !isActive ? '6 6' : undefined,
-          },
-          pathOptions: {
-            borderRadius: 12,
-            offset: 20,
-          },
-        };
-      }),
+        }),
+      ),
     [activeTheme.pathHex, config.connections, stepState.activeConnectionIds],
   );
 
@@ -146,10 +144,7 @@ export const ArchitectureDiagram = ({
   );
 
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-lg border border-slate-800/80 bg-slate-950/70"
-      style={{ height: 460 }}
-    >
+    <div className="relative h-full w-full overflow-hidden bg-slate-950/70">
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}

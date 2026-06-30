@@ -19,17 +19,7 @@ export const PacketInspector = ({
   onOpenGlossary
 }: PacketInspectorProps) => {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-2xl flex flex-col">
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-          <span className="w-2.5 h-2.5 rounded-full bg-orange-500 mr-2 animate-ping"></span>
-          パケットヘッダー情報(リアルタイムデコード)
-        </h2>
-        <span className="text-[10px] font-mono text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-          WIRESHARK VIEW
-        </span>
-      </div>
-
+    <div className="flex flex-col p-3">
       {/* Header Table */}
       <div className="bg-slate-950 rounded-lg border border-slate-800 p-3 font-mono text-xs space-y-3">
         <div className="grid grid-cols-12 gap-1 border-b border-slate-900 pb-2 text-slate-500 font-bold">

@@ -1,4 +1,4 @@
-import { Activity, ChevronLeft, ChevronRight, Info, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import type { ModeTheme } from '../../theme/modeThemes';
 
 interface StepControllerProps {
@@ -8,10 +8,9 @@ interface StepControllerProps {
   onPrevStep: () => void;
   onNextStep: () => void;
   onReset: () => void;
-  onOpenInspector?: () => void;
-  onOpenExplanation?: () => void;
 }
 
+/** キャンバス下中央にドックするステップ操作。常時表示。 */
 export const StepController = ({
   currentStep,
   totalSteps,
@@ -19,76 +18,41 @@ export const StepController = ({
   onPrevStep,
   onNextStep,
   onReset,
-  onOpenInspector,
-  onOpenExplanation,
 }: StepControllerProps) => {
   return (
-    <div className="mt-4 p-3 lg:p-4 bg-slate-950/90 rounded-lg border border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-3 lg:gap-4">
-      <div className="w-full lg:w-auto flex items-center justify-between gap-3">
-        <div className="min-w-0 flex items-center space-x-2">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-            ステップ制御:
-          </span>
-          <span
-            className={`${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder} text-xs px-2.5 py-1 rounded-full font-mono`}
-          >
-            STEP {currentStep + 1} / {totalSteps}
-          </span>
-        </div>
+    <div className="flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-900/90 p-1.5 shadow-2xl backdrop-blur">
+      <span
+        className={`${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder} mr-0.5 whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[11px]`}
+      >
+        STEP {currentStep + 1}/{totalSteps}
+      </span>
 
-        {(onOpenInspector || onOpenExplanation) && (
-          <div className="lg:hidden shrink-0 flex items-center gap-2">
-            {onOpenInspector && (
-              <button
-                type="button"
-                onClick={onOpenInspector}
-                className="w-9 h-9 rounded-lg bg-slate-900 border border-orange-500/60 text-orange-300 flex items-center justify-center active:scale-95 transition"
-                aria-label="WIRESHARK VIEWを開く"
-                title="WIRESHARK VIEW"
-              >
-                <Activity size={17} />
-              </button>
-            )}
-            {onOpenExplanation && (
-              <button
-                type="button"
-                onClick={onOpenExplanation}
-                className="w-9 h-9 rounded-lg bg-slate-900 border border-amber-500/60 text-amber-300 flex items-center justify-center active:scale-95 transition"
-                aria-label="ステップ解説を開く"
-                title="ステップ解説"
-              >
-                <Info size={17} />
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="w-full lg:w-auto flex flex-wrap justify-center lg:justify-end gap-2">
-        <button
-          onClick={onPrevStep}
-          disabled={currentStep === 0}
-          className="shrink-0 whitespace-nowrap px-3 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-[11px] sm:text-xs font-bold transition flex items-center gap-1"
-        >
-          <ChevronLeft size={14} />
-          前に戻る
-        </button>
-        <button
-          onClick={onNextStep}
-          disabled={currentStep === totalSteps - 1}
-          className="shrink-0 whitespace-nowrap px-3 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-[11px] sm:text-xs font-bold text-slate-950 transition flex items-center gap-1"
-        >
-          1ステップ進む
-          <ChevronRight size={14} />
-        </button>
-        <button
-          onClick={onReset}
-          className="shrink-0 whitespace-nowrap px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-[11px] sm:text-xs font-bold transition flex items-center gap-1"
-        >
-          <RotateCcw size={14} />
-          リセット
-        </button>
-      </div>
+      <button
+        onClick={onPrevStep}
+        disabled={currentStep === 0}
+        className="flex h-9 items-center gap-1 rounded-lg bg-slate-800 px-2.5 text-[11px] font-bold transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="前に戻る"
+      >
+        <ChevronLeft size={15} />
+        <span className="hidden sm:inline">前へ</span>
+      </button>
+      <button
+        onClick={onNextStep}
+        disabled={currentStep === totalSteps - 1}
+        className="flex h-9 items-center gap-1 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 px-3 text-[11px] font-bold text-slate-950 transition hover:from-orange-600 hover:to-amber-600 disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="1ステップ進む"
+      >
+        <span className="hidden sm:inline">進む</span>
+        <ChevronRight size={15} />
+      </button>
+      <button
+        onClick={onReset}
+        className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-slate-300 transition hover:bg-slate-700"
+        aria-label="リセット"
+        title="リセット"
+      >
+        <RotateCcw size={15} />
+      </button>
     </div>
   );
 };
