@@ -85,18 +85,11 @@ const challenge: ChallengeConfig = {
   ],
   initialDiagram: {
     viewport: { ...answerDiagram.viewport },
-    zones,
-    nodes: pickNodes(answerNodes, ['reader', 'crawler', 'route53', 'cloudfront', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb']),
-    connections: [
-      { id: 'reader-to-route53', from: 'reader', to: 'route53', kind: 'traffic', fromAnchor: 'top', toAnchor: 'left' },
-      { id: 'crawler-to-route53', from: 'crawler', to: 'route53', kind: 'traffic', fromAnchor: 'top', toAnchor: 'left' },
-      { id: 'route53-to-cf', from: 'route53', to: 'cloudfront', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
-      { id: 'cf-to-igw', from: 'cloudfront', to: 'igw', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
-      { id: 'igw-to-alb', from: 'igw', to: 'alb', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
-      { id: 'igw-to-public-rt', from: 'igw', to: 'public-rt', kind: 'attachment', label: 'route', fromAnchor: 'right', toAnchor: 'top' },
-    ],
+    zones: [],
+    nodes: pickNodes(answerNodes, ['reader', 'crawler']),
+    connections: [],
   },
-  lockedNodeIds: ['reader', 'crawler', 'route53', 'cloudfront', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb'],
+  lockedNodeIds: ['reader', 'crawler'],
   services: [
     createZoneService('vpc', '記事メディアを動かすネットワーク境界'),
     createZoneService('public-subnet', 'ALBを置くSubnet'),

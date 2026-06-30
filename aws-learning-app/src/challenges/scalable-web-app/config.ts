@@ -189,7 +189,7 @@ const answerDiagram: DiagramConfig = {
   ],
 };
 
-const initialNodeIds = ['user-pc', 'igw', 'public-rt', 'private-rt'];
+const initialNodeIds = ['user-pc'];
 
 const challenge: ChallengeConfig = {
   slug: 'scalable-web-app',
@@ -211,11 +211,9 @@ const challenge: ChallengeConfig = {
   ],
   initialDiagram: {
     viewport: { ...answerDiagram.viewport },
-    zones: challengeZones,
+    zones: [],
     nodes: pickAnswerNodes(initialNodeIds),
-    connections: [
-      { id: 'igw-to-public-rt', from: 'igw', to: 'public-rt', kind: 'attachment', label: 'route', fromAnchor: 'right', toAnchor: 'top' },
-    ],
+    connections: [],
   },
   lockedNodeIds: initialNodeIds,
   services: [

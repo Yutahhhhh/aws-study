@@ -87,17 +87,11 @@ const challenge: ChallengeConfig = {
   ],
   initialDiagram: {
     viewport: { ...answerDiagram.viewport },
-    zones,
-    nodes: pickNodes(answerNodes, ['user-pc', 'cloudfront', 'frontend-bucket', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb']),
-    connections: [
-      { id: 'user-to-cf', from: 'user-pc', to: 'cloudfront', kind: 'traffic', fromAnchor: 'top', toAnchor: 'left' },
-      { id: 'cf-to-frontend', from: 'cloudfront', to: 'frontend-bucket', kind: 'traffic', fromAnchor: 'right', toAnchor: 'left' },
-      { id: 'cf-to-igw', from: 'cloudfront', to: 'igw', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
-      { id: 'igw-to-alb', from: 'igw', to: 'alb', kind: 'traffic', fromAnchor: 'bottom', toAnchor: 'top' },
-      { id: 'igw-to-public-rt', from: 'igw', to: 'public-rt', kind: 'attachment', label: 'route', fromAnchor: 'right', toAnchor: 'top' },
-    ],
+    zones: [],
+    nodes: pickNodes(answerNodes, ['user-pc']),
+    connections: [],
   },
-  lockedNodeIds: ['user-pc', 'cloudfront', 'frontend-bucket', 'igw', 'alb', 'public-rt', 'private-rt', 'sg-alb'],
+  lockedNodeIds: ['user-pc'],
   services: [
     createZoneService('vpc', '画像投稿アプリを動かすネットワーク境界'),
     createZoneService('public-subnet', '公開入口を置くSubnet'),

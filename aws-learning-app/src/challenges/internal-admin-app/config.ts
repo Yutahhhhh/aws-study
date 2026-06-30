@@ -66,11 +66,11 @@ const challenge: ChallengeConfig = {
   ],
   initialDiagram: {
     viewport: { ...answerDiagram.viewport },
-    zones,
-    nodes: pickNodes(answerNodes, ['admin-pc', 'private-rt']),
+    zones: [],
+    nodes: pickNodes(answerNodes, ['admin-pc']),
     connections: [],
   },
-  lockedNodeIds: ['admin-pc', 'private-rt'],
+  lockedNodeIds: ['admin-pc'],
   services: [
     createZoneService('vpc', '管理用構成を置くネットワーク境界'),
     createZoneService('private-subnet', '管理用EC2とRDSを置くSubnet'),
