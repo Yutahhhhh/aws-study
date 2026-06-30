@@ -13,6 +13,7 @@ const config: TopicConfig = {
   homeIcon: 'Brain',
   homeColor: 'amber',
   diagram: diagramConfig,
+  inspectorKind: 'call',
   modes,
   defaultModeId: 'query',
   glossary,

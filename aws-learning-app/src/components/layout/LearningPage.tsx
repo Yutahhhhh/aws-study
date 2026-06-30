@@ -1,4 +1,4 @@
-import { Activity, Info } from 'lucide-react';
+import { Activity, ArrowLeftRight, Info } from 'lucide-react';
 import type { TopicConfig } from '../../types/topic';
 import { defaultModeThemes } from '../../theme/modeThemes';
 import { useSimulation } from '../../hooks/useSimulation';
@@ -33,6 +33,7 @@ export const LearningPage = ({ topicConfig }: LearningPageProps) => {
 
   const glossaryState = useGlossary();
   const currentTheme = modeThemes[currentMode.themeId] ?? defaultModeThemes.primary;
+  const inspectorKind = topicConfig.inspectorKind ?? 'packet';
 
   return (
     <div className="flex h-[100dvh] flex-col bg-slate-950 font-sans text-slate-100">
@@ -62,11 +63,11 @@ export const LearningPage = ({ topicConfig }: LearningPageProps) => {
           </div>
         </div>
 
-        {/* top-right: Wireshark ビュー */}
+        {/* top-right: パケット/呼び出しインスペクタ */}
         <div className="absolute right-3 top-3 z-30">
           <FloatingPanel
-            icon={<Activity size={15} />}
-            label="Wireshark"
+            icon={inspectorKind === 'packet' ? <Activity size={15} /> : <ArrowLeftRight size={15} />}
+            label={inspectorKind === 'packet' ? 'Wireshark' : 'API Trace'}
             accentClass="text-orange-300"
             align="right"
             width="w-80"
@@ -77,6 +78,7 @@ export const LearningPage = ({ topicConfig }: LearningPageProps) => {
               changes={currentStep.changes}
               location={currentStep.location}
               theme={currentTheme}
+              kind={inspectorKind}
               onOpenGlossary={glossaryState.open}
             />
           </FloatingPanel>

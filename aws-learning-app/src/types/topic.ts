@@ -20,6 +20,13 @@ export interface TopicConfig {
   diagram: DiagramConfig;
   modes: SimulationMode[];
   defaultModeId: string;
+  /**
+   * 右上パネルの表示形式。
+   * - packet(既定): IPパケットの通信（送信元/宛先IP・Port）として表示
+   * - call: API呼び出し/イベントの流れ（呼び出し元/先・操作）として表示。
+   *   IPアドレスやポート番号を持たないAPI/イベント駆動のトピックに使う
+   */
+  inspectorKind?: 'packet' | 'call';
   glossary: GlossaryDatabase;
   glossaryCategories?: GlossaryCategory[];
   modeThemes?: Record<string, ModeTheme>;

@@ -13,6 +13,7 @@ const config: TopicConfig = {
   homeIcon: 'Workflow',
   homeColor: 'rose',
   diagram: diagramConfig,
+  inspectorKind: 'call',
   modes,
   defaultModeId: 's3-event',
   glossary,

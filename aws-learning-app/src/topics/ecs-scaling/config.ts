@@ -13,6 +13,7 @@ const config: TopicConfig = {
   homeIcon: 'Gauge',
   homeColor: 'blue',
   diagram: diagramConfig,
+  inspectorKind: 'call',
   modes,
   defaultModeId: 'scale-out',
   glossary,

@@ -13,6 +13,7 @@ const config: TopicConfig = {
   homeIcon: 'Zap',
   homeColor: 'amber',
   diagram: diagramConfig,
+  inspectorKind: 'call',
   modes,
   defaultModeId: 'request',
   glossary,
