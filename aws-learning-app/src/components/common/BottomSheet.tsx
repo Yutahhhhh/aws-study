@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface BottomSheetProps {
@@ -12,11 +13,15 @@ interface BottomSheetProps {
 /**
  * 下からスライドして出るシート。スマホで重めのパネルを開くのに使う。
  * （旧 LearningPage のモバイルモーダル実装を汎用化したもの）
+ *
+ * fixed inset-0 は transform を持つ祖先がいると基準点がその祖先に変わってしまう
+ * （FloatingPanel の中央寄せ用 -translate-x-1/2 ラッパーなど）ため、document.body へ
+ * portal して常にビューポート基準の全画面オーバーレイになるようにする。
  */
 export const BottomSheet = ({ isOpen, title, icon, onClose, children }: BottomSheetProps) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[70] flex items-end bg-slate-950/80 p-3 backdrop-blur-sm"
       onClick={onClose}
@@ -42,6 +47,7 @@ export const BottomSheet = ({ isOpen, title, icon, onClose, children }: BottomSh
         </div>
         <div className="min-h-0 overflow-y-auto bg-slate-950 p-3">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

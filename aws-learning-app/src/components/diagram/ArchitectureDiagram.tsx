@@ -3,6 +3,8 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  Handle,
+  Position,
   ReactFlow,
   type Edge,
   type Node,
@@ -54,6 +56,19 @@ type ZoneFlowNode = Node<ZoneNodeData, 'zone'>;
 type DiagramFlowNode = ServiceFlowNode | ChipFlowNode | ZoneFlowNode;
 type DiagramFlowEdge = Edge;
 
+const chipHandles = (
+  <>
+    <Handle id="top-source" type="source" position={Position.Top} className="diagram-handle" />
+    <Handle id="top-target" type="target" position={Position.Top} className="diagram-handle" />
+    <Handle id="right-source" type="source" position={Position.Right} className="diagram-handle" />
+    <Handle id="right-target" type="target" position={Position.Right} className="diagram-handle" />
+    <Handle id="bottom-source" type="source" position={Position.Bottom} className="diagram-handle" />
+    <Handle id="bottom-target" type="target" position={Position.Bottom} className="diagram-handle" />
+    <Handle id="left-source" type="source" position={Position.Left} className="diagram-handle" />
+    <Handle id="left-target" type="target" position={Position.Left} className="diagram-handle" />
+  </>
+);
+
 const nodeTypes = {
   service: ({ data }: NodeProps<ServiceFlowNode>) => (
     <DiagramNode
@@ -65,7 +80,10 @@ const nodeTypes = {
     />
   ),
   chip: ({ data }: NodeProps<ChipFlowNode>) => (
-    <AssociationChip node={data.node} isActive={data.isActive} />
+    <div className="relative h-full w-full">
+      {chipHandles}
+      <AssociationChip node={data.node} isActive={data.isActive} />
+    </div>
   ),
   zone: ({ data }: NodeProps<ZoneFlowNode>) => <DiagramZone zone={data.zone} />,
 } satisfies NodeTypes;

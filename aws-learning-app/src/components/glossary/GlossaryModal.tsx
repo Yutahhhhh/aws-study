@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, BookOpen } from 'lucide-react';
+import { X, BookOpen, Maximize2, Minimize2 } from 'lucide-react';
 import { resolveIcon } from '../../utils/iconResolver';
 import type { GlossaryDatabase } from '../../types/glossary';
 import type { GlossaryCategory } from '../../types/topic';
@@ -20,12 +20,19 @@ export const GlossaryModal = ({
   categories,
 }: GlossaryModalProps) => {
   const [selectedTerm, setSelectedTerm] = useState(initialTerm);
+  const [isDetailExpanded, setIsDetailExpanded] = useState(false);
 
   useEffect(() => {
     if (initialTerm) {
       setSelectedTerm(initialTerm);
     }
   }, [initialTerm]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsDetailExpanded(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -39,26 +46,35 @@ export const GlossaryModal = ({
   ];
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-4xl h-[85vh] max-h-[700px] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-4xl h-[92dvh] md:h-[85vh] md:max-h-[700px] flex flex-col shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-          <div className="flex items-center space-x-2">
-            <BookOpen size={20} />
-            <h3 className="text-base font-bold text-slate-100">AWS Webインフラ専門用語辞典</h3>
+        <div className="shrink-0 px-4 py-3 md:px-6 md:py-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+          <div className="min-w-0 flex items-center space-x-2">
+            <BookOpen size={20} className="shrink-0" />
+            <h3 className="truncate text-sm font-bold text-slate-100 md:text-base">
+              AWS Webインフラ専門用語辞典
+            </h3>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition"
+            className="shrink-0 text-slate-400 hover:text-slate-100 bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition"
+            aria-label="用語集を閉じる"
+            title="閉じる"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-hidden">
           {/* Left Pane: Term List */}
-          <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/40 overflow-y-auto p-3 space-y-1">
+          <div
+            className={`w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/40 overflow-y-auto p-2 md:p-3 space-y-1 ${
+              isDetailExpanded ? 'hidden md:block' : 'max-h-44 shrink-0 md:max-h-none'
+            }`}
+          >
             {effectiveCategories.map((category, catIdx) => (
               <div key={catIdx}>
                 {catIdx > 0 && <div className="border-t border-slate-800/60 my-2" />}
@@ -70,15 +86,18 @@ export const GlossaryModal = ({
                   .map((key) => (
                     <button
                       key={key}
-                      onClick={() => setSelectedTerm(key)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${
+                      onClick={() => {
+                        setSelectedTerm(key);
+                        setIsDetailExpanded(false);
+                      }}
+                      className={`w-full text-left px-3 py-2.5 md:py-2 rounded-lg text-[11px] md:text-xs font-semibold transition flex items-center gap-2 ${
                         selectedTerm === key
                           ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
                           : 'text-slate-300 hover:bg-slate-800/50 hover:text-slate-100'
                       }`}
                     >
-                      {resolveIcon(glossaryData[key].icon)}
-                      {glossaryData[key].title}
+                      <span className="shrink-0">{resolveIcon(glossaryData[key].icon)}</span>
+                      <span className="min-w-0 truncate">{glossaryData[key].title}</span>
                     </button>
                   ))}
               </div>
@@ -86,15 +105,26 @@ export const GlossaryModal = ({
           </div>
 
           {/* Right Pane: Term Details */}
-          <div className="flex-1 overflow-y-auto p-6 bg-slate-900/30 flex flex-col space-y-4">
-            <div className="flex items-center space-x-2.5 pb-2 border-b border-slate-800">
-              <span className="text-blue-400">{resolveIcon(termData.icon)}</span>
-              <div>
-                <h4 className="text-base font-bold text-slate-100">{termData.title}</h4>
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">
-                  {termData.eng}
-                </span>
+          <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 bg-slate-900/30 flex flex-col space-y-4">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-slate-800">
+              <div className="min-w-0 flex items-center space-x-2.5">
+                <span className="shrink-0 text-blue-400">{resolveIcon(termData.icon)}</span>
+                <div className="min-w-0">
+                  <h4 className="truncate text-lg font-bold text-slate-100 md:text-base">{termData.title}</h4>
+                  <span className="block truncate text-[10px] text-slate-400 uppercase tracking-widest font-mono">
+                    {termData.eng}
+                  </span>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsDetailExpanded((current) => !current)}
+                className="md:hidden flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-slate-300 transition hover:bg-slate-700 hover:text-slate-100"
+                aria-label={isDetailExpanded ? '用語一覧を表示する' : '説明を広げる'}
+                title={isDetailExpanded ? '用語一覧を表示する' : '説明を広げる'}
+              >
+                {isDetailExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
             </div>
 
             {/* One-liner Summary */}
@@ -102,7 +132,7 @@ export const GlossaryModal = ({
               <span className="text-[10px] font-bold text-blue-400 uppercase block mb-1">
                 端的にいうと？
               </span>
-              <p className="text-xs text-blue-200 leading-relaxed font-semibold">
+              <p className="text-sm text-blue-200 leading-relaxed font-semibold md:text-xs">
                 {termData.oneLiner}
               </p>
             </div>
@@ -111,7 +141,7 @@ export const GlossaryModal = ({
             <div className="space-y-2">
               <span className="text-[10px] font-bold text-slate-400 uppercase block">技術詳細</span>
               <p
-                className="text-xs text-slate-300 leading-relaxed"
+                className="text-sm text-slate-300 leading-relaxed md:text-xs"
                 dangerouslySetInnerHTML={{ __html: termData.detail }}
               />
             </div>
@@ -122,7 +152,7 @@ export const GlossaryModal = ({
                 開発エンジニアとしての重要ポイント
               </span>
               <p
-                className="text-xs text-slate-300 leading-relaxed"
+                className="text-sm text-slate-300 leading-relaxed md:text-xs"
                 dangerouslySetInnerHTML={{ __html: termData.focus }}
               />
             </div>
@@ -130,8 +160,9 @@ export const GlossaryModal = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex justify-end">
+        <div className="shrink-0 px-4 py-3 md:px-6 md:py-4 border-t border-slate-800 bg-slate-950/40 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-bold text-white transition"
           >
