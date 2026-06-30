@@ -10,6 +10,9 @@ const challengeLoaders: Record<string, () => Promise<{ default: ChallengeConfig 
   'ecommerce-app': () => import('./ecommerce-app/config'),
   'document-search-app': () => import('./document-search-app/config'),
   'internal-admin-app': () => import('./internal-admin-app/config'),
+  'data-layer-app': () => import('./data-layer-app/config'),
+  'advanced-network-app': () => import('./advanced-network-app/config'),
+  'multi-region-dr-app': () => import('./multi-region-dr-app/config'),
 };
 
 export const challengeManifest: ChallengeManifest[] = [
@@ -93,6 +96,33 @@ export const challengeManifest: ChallengeManifest[] = [
     color: 'blue',
     badge: '設計演習',
     path: '/challenges/internal-admin-app',
+  },
+  {
+    slug: 'data-layer-app',
+    title: 'データ層を設計する',
+    description: '接続枯渇を防ぐRDS Proxyと、読み取りを受けるElastiCacheで、スケールに強いデータ層を作る',
+    icon: 'Database',
+    color: 'amber',
+    badge: '設計演習',
+    path: '/challenges/data-layer-app',
+  },
+  {
+    slug: 'advanced-network-app',
+    title: 'NATを使わずVPC Endpointで閉じる',
+    description: 'Private SubnetのegressをInterface/Gateway Endpointだけで成立させ、NATを排した閉域構成を作る',
+    icon: 'Cable',
+    color: 'blue',
+    badge: '設計演習',
+    path: '/challenges/advanced-network-app',
+  },
+  {
+    slug: 'multi-region-dr-app',
+    title: 'マルチリージョンDRを設計する',
+    description: 'データ複製・Warm Standby・Route 53フェイルオーバーでリージョン障害に備える構成を作る',
+    icon: 'Globe',
+    color: 'amber',
+    badge: '設計演習',
+    path: '/challenges/multi-region-dr-app',
   },
 ];
 

@@ -70,7 +70,7 @@ const challenge: ChallengeConfig = {
   requirements: [
     { id: 'network', title: 'AWSネットワークの土台', description: 'VPC、Public/Private Subnet、Route Table、Internet Gatewayを明示し、ALBだけをPublic Subnetに置く。' },
     { id: 'auth', title: '会員ログイン', description: 'ログインとトークン発行をCognitoで担う。' },
-    { id: 'protection', title: '入口保護', description: 'CloudFrontの後段でWAFを通し、不正なリクエストを入口で抑える。' },
+    { id: 'protection', title: '入口保護', description: 'CloudFront(入口)にWAFを関連付け、不正なリクエストをエッジで抑える。' },
     { id: 'db', title: '会員データ', description: '会員/契約データはRDSへ保存し、APIからだけ接続できるようにする。' },
     { id: 'secrets', title: '秘密情報', description: 'DB接続情報はコードではなくSecrets ManagerからAPIが取得する。' },
     { id: 'audit', title: '監査ログ', description: '重要操作やアプリログをCloudWatch Logsに残す。' },
@@ -144,7 +144,7 @@ const challenge: ChallengeConfig = {
   answerDiagram,
   answerTrace: [
     { id: 'network', title: 'SaaSのネットワーク土台を作る', description: 'VPC内にPublic/Private Subnetを作り、IGWとRoute Tableを関連付けます。', visibleNodeIds: ['user-pc', 'igw', 'public-rt', 'private-rt'], visibleConnectionIds: ['igw-to-public-rt'], activeNodeIds: ['igw', 'public-rt', 'private-rt'], activeConnectionIds: ['igw-to-public-rt'] },
-    { id: 'auth', title: '入口保護とログインを置く', description: 'CloudFrontの後段にWAFを置き、会員ログインはCognitoが担います。', visibleNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito', 'igw', 'public-rt', 'private-rt'], visibleConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito', 'igw-to-public-rt'], activeNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito'], activeConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito'] },
+    { id: 'auth', title: '入口保護とログインを置く', description: 'CloudFront(入口)にWAFを関連付けてエッジで不正を弾き、会員ログインはCognitoが担います。', visibleNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito', 'igw', 'public-rt', 'private-rt'], visibleConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito', 'igw-to-public-rt'], activeNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito'], activeConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito'] },
     { id: 'api', title: 'APIをPrivate Subnetへ届ける', description: 'WAFを通ったAPIリクエストをIGW、ALB、ECS Fargateへ渡します。ALBだけPublic、ECS FargateはPrivateに配置します。', visibleNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito', 'igw', 'public-rt', 'private-rt', 'alb', 'sg-alb', 'ecs', 'sg-ecs'], visibleConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito', 'waf-to-igw', 'igw-to-alb', 'alb-to-ecs', 'igw-to-public-rt', 'sg-alb-to-sg-ecs'], activeNodeIds: ['waf', 'igw', 'alb', 'ecs', 'sg-alb', 'sg-ecs'], activeConnectionIds: ['waf-to-igw', 'igw-to-alb', 'alb-to-ecs', 'sg-alb-to-sg-ecs'] },
     { id: 'data', title: 'DB、秘密情報、監査ログをつなぐ', description: 'RDSはPrivate Subnetに置き、ECSからだけ接続します。DB接続情報はSecrets Managerから読み、操作ログはCloudWatch Logsへ出します。', visibleNodeIds: ['user-pc', 'cloudfront', 'waf', 'cognito', 'audit-log', 'igw', 'public-rt', 'private-rt', 'alb', 'sg-alb', 'ecs', 'sg-ecs', 'rds', 'sg-rds', 'secrets'], visibleConnectionIds: ['user-to-cf', 'cf-to-waf', 'waf-to-cognito', 'waf-to-igw', 'igw-to-alb', 'alb-to-ecs', 'ecs-to-rds', 'ecs-to-secrets', 'ecs-to-audit', 'igw-to-public-rt', 'sg-alb-to-sg-ecs', 'sg-ecs-to-sg-rds'], activeNodeIds: ['ecs', 'rds', 'secrets', 'audit-log', 'sg-rds'], activeConnectionIds: ['ecs-to-rds', 'ecs-to-secrets', 'ecs-to-audit', 'sg-ecs-to-sg-rds'] },
   ],
