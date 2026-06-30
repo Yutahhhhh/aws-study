@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.glossary-link {
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.glossary-link:hover {
+  text-decoration-style: solid;
+}
+
+.glow-active {
+  filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8));
+  stroke-width: 3;
+}
+
+.pulse-node {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.diagram-handle {
+  width: 1px !important;
+  height: 1px !important;
+  min-width: 1px !important;
+  min-height: 1px !important;
+  border: 0 !important;
+  background: transparent !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.react-flow__node {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.react-flow__node:focus,
+.react-flow__node:focus-visible {
+  outline: none;
+}
+
+.react-flow__edge-path {
+  transition: stroke 0.3s, stroke-opacity 0.3s, stroke-width 0.3s;
+}
+
+.react-flow .react-flow__controls {
+  overflow: hidden;
+  border: 1px solid rgba(51, 65, 85, 0.9) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.45) !important;
+}
+
+.react-flow .react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.9) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  color: rgb(203, 213, 225) !important;
+}
+
+.react-flow .react-flow__controls-button:hover {
+  background: rgba(30, 41, 59, 0.96) !important;
+}
+
+.react-flow .react-flow__controls-button svg {
+  fill: currentColor !important;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .7;
+    transform: scale(1.05);
+  }
+}
+
+.header-diff {
+  animation: highlight-change 1.5s ease-out;
+}
+
+@keyframes highlight-change {
+  0% {
+    background-color: rgba(234, 88, 12, 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
