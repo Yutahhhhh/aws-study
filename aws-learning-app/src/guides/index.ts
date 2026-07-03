@@ -17,6 +17,9 @@ const guideLoaders: Record<string, () => Promise<{ default: GuideConfig }>> = {
   'troubleshooting': () => import('./troubleshooting/config'),
   'cost': () => import('./cost/config'),
   'terraform-structure': () => import('./terraform-structure/config'),
+  'dns-tls-domain': () => import('./dns-tls-domain/config'),
+  'environments-and-config': () => import('./environments-and-config/config'),
+  'webapp-launch-checklist': () => import('./webapp-launch-checklist/config'),
 };
 
 export async function loadGuideConfig(slug: string): Promise<GuideConfig> {

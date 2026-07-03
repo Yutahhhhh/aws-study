@@ -10,6 +10,16 @@ import cloudFrontIconUrl from '../assets/aws/Architecture-Service-Icons_07312025
 import vpcIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Amazon-Virtual-Private-Cloud_48.svg?url';
 import elbIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Elastic-Load-Balancing_48.svg?url';
 import s3IconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Storage/48/Arch_Amazon-Simple-Storage-Service_48.svg?url';
+import apiGatewayIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Amazon-API-Gateway_48.svg?url';
+import lambdaIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Compute/48/Arch_AWS-Lambda_48.svg?url';
+import dynamoDbIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Database/48/Arch_Amazon-DynamoDB_48.svg?url';
+import cloudWatchIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Management-Governance/48/Arch_Amazon-CloudWatch_48.svg?url';
+import iamIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Security-Identity-Compliance/48/Arch_AWS-Identity-and-Access-Management_48.svg?url';
+import sqsIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-Simple-Queue-Service_48.svg?url';
+import snsIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-Simple-Notification-Service_48.svg?url';
+import eventBridgeIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-EventBridge_48.svg?url';
+import sesIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Business-Applications/48/Arch_Amazon-Simple-Email-Service_48.svg?url';
+import codeDeployIconUrl from '../assets/aws/Architecture-Service-Icons_07312025/Arch_Developer-Tools/48/Arch_AWS-CodeDeploy_48.svg?url';
 import igwIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_Internet-Gateway_48.svg?url';
 import natGatewayIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_NAT-Gateway_48.svg?url';
 import routeTableIconUrl from '../assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Route-Table_48.svg?url';
@@ -27,6 +37,16 @@ const assetIconUrls: Record<string, string> = {
   '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Amazon-Virtual-Private-Cloud_48.svg': vpcIconUrl,
   '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Elastic-Load-Balancing_48.svg': elbIconUrl,
   '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Storage/48/Arch_Amazon-Simple-Storage-Service_48.svg': s3IconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Amazon-API-Gateway_48.svg': apiGatewayIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Compute/48/Arch_AWS-Lambda_48.svg': lambdaIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Database/48/Arch_Amazon-DynamoDB_48.svg': dynamoDbIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Management-Governance/48/Arch_Amazon-CloudWatch_48.svg': cloudWatchIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Security-Identity-Compliance/48/Arch_AWS-Identity-and-Access-Management_48.svg': iamIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-Simple-Queue-Service_48.svg': sqsIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-Simple-Notification-Service_48.svg': snsIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-EventBridge_48.svg': eventBridgeIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Business-Applications/48/Arch_Amazon-Simple-Email-Service_48.svg': sesIconUrl,
+  '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Developer-Tools/48/Arch_AWS-CodeDeploy_48.svg': codeDeployIconUrl,
   '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_Internet-Gateway_48.svg': igwIconUrl,
   '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-VPC_NAT-Gateway_48.svg': natGatewayIconUrl,
   '/src/assets/aws/Resource-Icons_07312025/Res_Networking-Content-Delivery/Res_Amazon-Route-53_Route-Table_48.svg': routeTableIconUrl,

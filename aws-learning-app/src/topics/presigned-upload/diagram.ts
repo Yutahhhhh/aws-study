@@ -1,0 +1,98 @@
+import type { DiagramConfig } from '../../types/diagram';
+
+const ICON = {
+  alb: '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Networking-Content-Delivery/48/Arch_Elastic-Load-Balancing_48.svg',
+  ecs: '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Containers/48/Arch_Amazon-Elastic-Container-Service_48.svg',
+  s3: '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Storage/48/Arch_Amazon-Simple-Storage-Service_48.svg',
+  sqs: '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_App-Integration/48/Arch_Amazon-Simple-Queue-Service_48.svg',
+  rds: '/src/assets/aws/Architecture-Service-Icons_07312025/Arch_Database/48/Arch_Amazon-RDS_48.svg',
+};
+
+export const diagramConfig: DiagramConfig = {
+  viewport: { width: 1000, height: 560, padding: 48 },
+  zones: [
+    {
+      id: 'aws',
+      label: 'AWS (ap-northeast-1)',
+      position: { x: 240, y: 20, width: 730, height: 510 },
+      contentPadding: { top: 44, right: 18, bottom: 18, left: 18 },
+      style: { borderColor: 'border-slate-600', borderStyle: 'border-dashed', bgColor: 'bg-transparent', labelColor: 'text-slate-500' },
+    },
+  ],
+  nodes: [
+    {
+      id: 'browser',
+      label: 'ブラウザ',
+      sublabel: '100MBの動画を投稿',
+      icon: 'Users',
+      position: { x: 40, y: 220, width: 150, height: 96 },
+      style: { bgColor: 'bg-slate-800', borderColor: 'border-slate-500', textColor: 'text-slate-200', accentColor: 'text-slate-400' },
+    },
+    {
+      id: 'alb',
+      label: 'ALB',
+      sublabel: 'API入口',
+      metadata: 'idle timeout 60s',
+      icon: ICON.alb,
+      position: { x: 280, y: 80, width: 165, height: 92 },
+      style: { bgColor: 'bg-indigo-950', borderColor: 'border-indigo-500', textColor: 'text-indigo-200', accentColor: 'text-indigo-400' },
+    },
+    {
+      id: 'api',
+      label: 'ECS API',
+      sublabel: '認可 / URL発行',
+      icon: ICON.ecs,
+      position: { x: 280, y: 300, width: 175, height: 96 },
+      glossaryTermId: 'presigned-url',
+      style: { bgColor: 'bg-emerald-950', borderColor: 'border-emerald-500', textColor: 'text-emerald-200', accentColor: 'text-emerald-400' },
+    },
+    {
+      id: 's3-upload',
+      label: 'S3 Upload Bucket',
+      sublabel: 'ファイル実体',
+      metadata: 'CORS設定済み',
+      icon: ICON.s3,
+      position: { x: 540, y: 80, width: 185, height: 96 },
+      glossaryTermId: 'upload-cors',
+      style: { bgColor: 'bg-sky-950', borderColor: 'border-sky-500', textColor: 'text-sky-200', accentColor: 'text-sky-400' },
+    },
+    {
+      id: 'queue',
+      label: 'SQS',
+      sublabel: 'ObjectCreated',
+      icon: ICON.sqs,
+      position: { x: 545, y: 310, width: 170, height: 90 },
+      glossaryTermId: 's3-event-upload',
+      style: { bgColor: 'bg-amber-950', borderColor: 'border-amber-500', textColor: 'text-amber-200', accentColor: 'text-amber-400' },
+    },
+    {
+      id: 'worker',
+      label: 'ECS Worker',
+      sublabel: '検証 / サムネイル',
+      icon: ICON.ecs,
+      position: { x: 780, y: 310, width: 170, height: 92 },
+      glossaryTermId: 'upload-validation',
+      style: { bgColor: 'bg-teal-950', borderColor: 'border-teal-500', textColor: 'text-teal-200', accentColor: 'text-teal-400' },
+    },
+    {
+      id: 'db',
+      label: 'RDS',
+      sublabel: 'ファイル状態管理',
+      metadata: 'pending / ready',
+      icon: ICON.rds,
+      position: { x: 780, y: 80, width: 170, height: 96 },
+      glossaryTermId: 'two-phase-upload',
+      style: { bgColor: 'bg-purple-950', borderColor: 'border-purple-500', textColor: 'text-purple-200', accentColor: 'text-purple-400' },
+    },
+  ],
+  connections: [
+    { id: 'browser-to-alb', from: 'browser', to: 'alb', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'alb-to-api', from: 'alb', to: 'api', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'api-to-s3', from: 'api', to: 's3-upload', fromAnchor: 'right', toAnchor: 'bottom', style: { dashed: true } },
+    { id: 'browser-to-s3', from: 'browser', to: 's3-upload', fromAnchor: 'top', toAnchor: 'left' },
+    { id: 'api-to-db', from: 'api', to: 'db', fromAnchor: 'right', toAnchor: 'bottom', style: { dashed: true } },
+    { id: 's3-to-queue', from: 's3-upload', to: 'queue', fromAnchor: 'bottom', toAnchor: 'top' },
+    { id: 'queue-to-worker', from: 'queue', to: 'worker', fromAnchor: 'right', toAnchor: 'left' },
+    { id: 'worker-to-db', from: 'worker', to: 'db', fromAnchor: 'top', toAnchor: 'bottom' },
+  ],
+};

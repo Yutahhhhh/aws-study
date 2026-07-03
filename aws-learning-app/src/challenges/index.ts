@@ -13,6 +13,9 @@ const challengeLoaders: Record<string, () => Promise<{ default: ChallengeConfig 
   'data-layer-app': () => import('./data-layer-app/config'),
   'advanced-network-app': () => import('./advanced-network-app/config'),
   'multi-region-dr-app': () => import('./multi-region-dr-app/config'),
+  'blue-green-release': () => import('./blue-green-release/config'),
+  'realtime-chat-app': () => import('./realtime-chat-app/config'),
+  'scheduled-batch-app': () => import('./scheduled-batch-app/config'),
 };
 
 export const challengeManifest: ChallengeManifest[] = [
@@ -123,6 +126,33 @@ export const challengeManifest: ChallengeManifest[] = [
     color: 'amber',
     badge: '設計演習',
     path: '/challenges/multi-region-dr-app',
+  },
+  {
+    slug: 'blue-green-release',
+    title: 'Blue/Greenデプロイを設計する',
+    description: '新旧バージョンを並行稼働させ、Target Group切替でゼロダウンタイムリリースと自動ロールバックを作る',
+    icon: 'Repeat2',
+    color: 'blue',
+    badge: '設計演習',
+    path: '/challenges/blue-green-release',
+  },
+  {
+    slug: 'realtime-chat-app',
+    title: 'リアルタイムチャットを設計する',
+    description: 'WebSocket API・Lambda・DynamoDBで接続管理、メッセージ保存、push配信までを組み立てる',
+    icon: 'MessagesSquare',
+    color: 'amber',
+    badge: '設計演習',
+    path: '/challenges/realtime-chat-app',
+  },
+  {
+    slug: 'scheduled-batch-app',
+    title: '定期バッチとメール配信を設計する',
+    description: 'EventBridge Schedulerで深夜バッチを起動し、集計・レポート保存・メール配信・失敗検知の通知まで作る',
+    icon: 'CalendarClock',
+    color: 'rose',
+    badge: '設計演習',
+    path: '/challenges/scheduled-batch-app',
   },
 ];
 
